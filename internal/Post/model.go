@@ -1,4 +1,4 @@
-package pkg
+package post
 
 type Post struct {
 	ID     int      `json:"id"`

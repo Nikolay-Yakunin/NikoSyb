@@ -3,20 +3,17 @@ package main
 import (
 	"fmt"
 	"html"
-	"log"
-	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// TODO: Add env
-	s := &http.Server{
-		Addr: ":8080",
-	}
+	r := gin.Default()
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.Status(200)
+		fmt.Fprintf(ctx.Writer, "Hello, %s", html.EscapeString(ctx.Request.URL.Path))
 	})
 
-	// Add Graceful shotdown
-	log.Fatal(s.ListenAndServe())
+	r.Run()
 }
