@@ -13,4 +13,4 @@ build:
 # --- dev ---
 
 fmt:
-	go fmt ./...
+	gofmt -w .

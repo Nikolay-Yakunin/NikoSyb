@@ -1,8 +1,13 @@
 package post
 
+import (
+	"github.com/lib/pq"
+	"gorm.io/gorm"
+)
+
 type Post struct {
-	ID     int      `json:"id"`
-	Title  string   `json:"title"`
-	Body   string   `json:"body"`
-	Images []string `json:"images"`
+	gorm.Model
+	Title  string         `json:"title" binding:"required" gorm:"type:varchar(255);not null"`
+	Body   string         `json:"body" binding:"required" gorm:"type:text;not null"`
+	Images pq.StringArray `json:"images" gorm:"type:text[]"`
 }

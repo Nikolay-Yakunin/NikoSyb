@@ -1,3 +1,6 @@
 # env
-
 .env
+
+# pgadmin
+pgadmin/
+pgdata/
