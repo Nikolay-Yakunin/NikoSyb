@@ -77,7 +77,7 @@ cp env.example .env
 ```
 2) Запустите окружение для бэкенда
 ```sh
-cd blog-service && docker-compose -f compose.dev.yaml up -d
+docker-compose -f compose.dev.yaml up -d
 ```
 Убедитесь что не возникло ощибок.
 3) Запустите сервис
