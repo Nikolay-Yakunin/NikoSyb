@@ -1,0 +1,35 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono, Roboto_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["latin", "cyrillic"],
+});
+
+export const metadata: Metadata = {
+  title: "NIKOSYB",
+  description:
+    "Личный блог full-stack разрабочика Nikolay-Yakunin. Здесь вы найдете новости о моей жизни, мои достижения и открытия. Приятного чтения!",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="ru">
+      <body
+        className={`${geistSans.variable} ${robotoMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
