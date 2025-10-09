@@ -77,6 +77,7 @@ cp env.example .env
 ```
 2) Запустите окружение для бэкенда
 ```sh
+mkdir pgadmin && sudo chown -R 5050:80 pgadmin
 docker-compose -f compose.dev.yaml up -d
 ```
 Убедитесь что не возникло ощибок.
