@@ -20,7 +20,8 @@ blog-service/
 ├── go.sum
 ├── compose.dev.yaml
 ├── Dockerfile            -- Разделен на 2 стадии, на сборку и развертывание бинарника.
-└── Makefile              -- make run; make fmt; make build
+├── Makefile              -- make run; make fmt; make build
+└── README.md             -- Вы сейчас здесь
 ```
 ### Планы
 
