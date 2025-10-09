@@ -4,7 +4,7 @@ import html from "remark-html";
 import gfm from "remark-gfm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const markdownProcessor = remark().use(gfm).use(html);
 
@@ -24,7 +24,7 @@ export default async function BlogPostPage({
   const data: Post = await res.json();
 
   const processed = await markdownProcessor.process(data.body);
-  
+
   const post = {
     ...data,
     html: String(processed.value),

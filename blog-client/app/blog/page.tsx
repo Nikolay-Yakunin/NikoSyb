@@ -3,7 +3,7 @@ import { remark } from "remark";
 import html from "remark-html";
 import gfm from "remark-gfm";
 import Link from "next/link";
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const markdownProcessor = remark().use(gfm).use(html);
 
@@ -18,7 +18,6 @@ export default async function Blog() {
   const postsWithHtml = await Promise.all(
     posts.map(async (post) => {
       const processed = await markdownProcessor.process(post.body);
-      console.log(processed)
       return {
         ...post,
         html: String(processed.value),
