@@ -70,37 +70,28 @@ blog-client/
 
 ## Запуск
 
-1) Скопируйте переменные окружения
+1) Склонируйте репозиторий
+
+```sh
+git clone https://github.com/Nikolay-Yakunin/NikoSyb.git
+cd NikoSyb
+```
+
+2) Скопируйте переменные окружения
 ```sh
 cd blog-service
-cp env.example .env
+cp .env.example .env
 ```
-2) Запустите окружение для бэкенда
-```sh
-mkdir pgadmin && sudo chown -R 5050:80 pgadmin
-docker-compose -f compose.dev.yaml up -d
-```
-Убедитесь что не возникло ощибок.
-3) Запустите сервис
-```sh
-make run
-```
-4) В другой сессии терминала, скопируйте переменные окружения
-```sh
-cd blog-client
-cp env.example .env
-```
-5) Установите зависимости для фронта
-```sh
-npm i
-``` 
-6) Запустите фронт
-```sh
-npm run dev
-```
-Если ни на одном их этапов, не возникло ошибок.
 
-Вы можете посмотреть результат в браузере, по адресу ```http://localhost:3000/```
+3) Запустите docker-compose в первый раз
 ```sh
-open http://localhost:3000/
+cd ..
+docker-compose -f compose.prod.yaml up --build
 ```
+
+4) Перейдите на ```http://localhost```
+```sh
+open http://localhost
+```
+
+Ура! (Скорее всего, там не будет контента ;) )
