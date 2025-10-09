@@ -13,4 +13,4 @@ build:
 # --- dev ---
 
 fmt:
-	gofmt -w .
+	gofmt -d -s -w -l -e ./**/**/*.go ./**/*.go
