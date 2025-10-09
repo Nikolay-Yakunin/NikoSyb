@@ -1,29 +1,33 @@
-import { PostsResponse, Post } from "../../types";
+import { Post } from "../../../types";
 import { remark } from "remark";
 import html from "remark-html";
 import gfm from "remark-gfm";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 
 const markdownProcessor = remark().use(gfm).use(html);
 
-export default async function Blog() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/posts`);
-  if (!res.ok) {
-    throw new Error("Failed to fetch posts");
-  }
-  const data: PostsResponse = await res.json();
-  const posts = data.posts;
+export default async function BlogPostPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const { id } = params;
 
-  const postsWithHtml = await Promise.all(
-    posts.map(async (post) => {
-      const processed = await markdownProcessor.process(post.body);
-      console.log(processed)
-      return {
-        ...post,
-        html: String(processed.value),
-      };
-    }),
-  );
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/v1/posts/${id}`);
+  if (!res.ok) {
+    if (!res.ok) {
+      notFound();
+    }
+  }
+  const data: Post = await res.json();
+
+  const processed = await markdownProcessor.process(data.body);
+  
+  const post = {
+    ...data,
+    html: String(processed.value),
+  };
 
   return (
     <div className="flex flex-col min-h-screen p-0 m-0 font-mono bg-black text-white">
@@ -37,24 +41,20 @@ export default async function Blog() {
 
       <main className="flex-grow px-4 py-12">
         <div className="container mx-auto max-w-2xl">
-          <h1 className="text-3xl mb-8">Blog</h1>
-          {posts.length === 0 ? (
+          <h1 className="text-3xl mb-8">
+            <Link href={"/blog"}>Blog</Link>
+          </h1>
+          {!post ? (
             <p className="text-gray-400">No posts yet.</p>
           ) : (
             <div className="space-y-12">
-              {postsWithHtml.map((post) => (
-                <div key={post.ID} className="space-y-4">
-                  <h1 className="text-4xl">
-                    <Link href={`/blog/${post.ID}`} className="hover:underline">
-                      {post.title}
-                    </Link>
-                  </h1>
-                  <article
-                    className="prose prose-invert prose-lg max-w-none"
-                    dangerouslySetInnerHTML={{ __html: post.html }}
-                  />
-                </div>
-              ))}
+              <div key={post.ID}>
+                <h1 className="text-4xl">{data.title}</h1>
+                <article
+                  className="prose prose-invert prose-lg max-w-none"
+                  dangerouslySetInnerHTML={{ __html: post.html }}
+                />
+              </div>
             </div>
           )}
         </div>

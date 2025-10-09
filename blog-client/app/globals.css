@@ -1,9 +1,60 @@
 @import "tailwindcss";
-/* 
-* {
-  padding: 0;
-  margin: 0;
-} */
+/* @import "tailwindcss/preflight"; */
+/* @import "@tailwindcss/typography"; */
+@tailwind utilities;
+
+.prose :where(pre):not(:where([class~="not-prose"] *)) {
+  @apply rounded-md bg-gray-900 p-4 text-sm;
+}
+
+/* Базовые стили для markdown элементов */
+.prose :where(h1, h2, h3, h4, h5, h6) {
+  @apply text-white font-bold mt-6 mb-3;
+}
+
+.prose :where(h1) {
+  @apply text-4xl;
+}
+
+.prose :where(h2) {
+  @apply text-3xl;
+}
+
+.prose :where(h3) {
+  @apply text-2xl;
+}
+
+.prose :where(h4) {
+  @apply text-xl;
+}
+
+.prose :where(h5, h6) {
+  @apply text-lg;
+}
+
+.prose :where(ul, ol) {
+  @apply list-disc list-inside ml-4 space-y-2;
+}
+
+.prose :where(ol) {
+  @apply list-decimal;
+}
+
+.prose :where(li) {
+  @apply text-white;
+}
+
+.prose :where(p) {
+  @apply text-white mb-4;
+}
+
+.prose :where(strong) {
+  @apply font-bold text-white;
+}
+
+.prose :where(em) {
+  @apply italic text-white;
+}
 
 :root {
   --background: #fafafa;
