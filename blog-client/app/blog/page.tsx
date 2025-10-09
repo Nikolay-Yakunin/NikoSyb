@@ -3,6 +3,7 @@ import { remark } from "remark";
 import html from "remark-html";
 import gfm from "remark-gfm";
 import Link from "next/link";
+export const dynamic = 'force-dynamic';
 
 const markdownProcessor = remark().use(gfm).use(html);
 

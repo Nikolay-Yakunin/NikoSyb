@@ -4,6 +4,7 @@ import html from "remark-html";
 import gfm from "remark-gfm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+export const dynamic = 'force-dynamic';
 
 const markdownProcessor = remark().use(gfm).use(html);
 

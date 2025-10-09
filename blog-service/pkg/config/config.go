@@ -6,11 +6,13 @@ import (
 
 type Config struct {
 	Dns string
+	Port string
 }
 
 func NewConfig() *Config {
 	return &Config{
-		Dns: getEnv("DNS", "host=localhost user=postuser password=postpass dbname=postdb port=9920 sslmode=disable TimeZone=Asia/Barnaul"),
+		Port: getEnv("PORT", ":8080"),
+		Dns: getEnv("DNS", "postgres user=postuser password=postpass dbname=postdb port=5432 sslmode=disable"),
 	}
 }
 

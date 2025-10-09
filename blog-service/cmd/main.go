@@ -14,17 +14,27 @@ import (
 )
 
 func main() {
+	log.Println("Starting application...")
 	conf := config.NewConfig()
+	log.Printf("Configuration loaded. DNS: %s\n", conf.Dns)
 
 	r := gin.Default()
+	log.Println("Gin router initialized.")
 
 	// DB
+	log.Println("Connecting to database...")
 	db, err := gorm.Open(postgres.Open(conf.Dns), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
+	log.Println("Database connection established.")
 
-	db.AutoMigrate(&post.Post{})
+	log.Println("Running auto-migration...")
+	err = db.AutoMigrate(&post.Post{})
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	log.Println("Auto-migration completed.")
 
 	// Repos
 
@@ -48,5 +58,8 @@ func main() {
 	v1.GET("/posts", postHandler.GetPosts)
 	v1.GET("/posts/:id", postHandler.GetPostById)
 
-	r.Run()
+	log.Printf("Starting server on port %s", conf.Port)
+	if err := r.Run(conf.Port); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
 }
