@@ -22,7 +22,7 @@ git clone https://github.com/Nikolay-Yakunin/NikoSyb.git
 cd NikoSyb
 ```
 
-# В режиме разработки
+### В режиме разработки
 
 1) Скопируйте переменные окружения
 ```sh
@@ -40,7 +40,7 @@ docker-compose -f docker/compose.dev.yaml up
 open http://localhost
 ```
 
-# В режиме продакшена
+### В режиме продакшена
 
 1) Поместите ваш ключ и сертификат в ```nginx/ssl```
 
@@ -99,9 +99,9 @@ docker-compose -f docker/compose.prod.yaml up
 
 6) Теперь приложение доступно на вашем домене или на ```localhost```
 
-### Планы
+## Планы
 
-### stage 1
+## stage 1
 На первой стадии (release 1.0.0), я хочу реализовать пользовательский клиент, api gateway и сервис для постов. 
 
 - Когда стадия будет достигнута?
@@ -112,7 +112,7 @@ docker-compose -f docker/compose.prod.yaml up
 ![stage 1 arch](images/stage1.png)
 
 
-### stage 2
+## stage 2
 На второй стадии (release 2.0.0), я хочу реализовать PWA для пользовательского клиента, и админ дашбоард, для управления контентом.
 
 - Когда стадия будет достигнута?
@@ -124,7 +124,7 @@ docker-compose -f docker/compose.prod.yaml up
 
 ![stage 2 arch](images/stage2.png)
 
-### stage 3
+## stage 3
 На финальной стадии (release 3.0.0), необходимо добавить мониторинг и протестировать приложение под нагрузкой. Также, необходимо провести рефакторинг кодовой базы.
 
 - Когда стадия будет достигнута?
