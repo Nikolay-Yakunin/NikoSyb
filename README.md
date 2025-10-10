@@ -135,4 +135,4 @@ docker-compose -f docker/compose.prod.yaml up
 ![stage 3 arch](images/stage3.png)
 
 ©Якунин Николай Владимирович
-[MIT](https://opensource.org/licenses/MIT)
+[MIT](LICENSE)
