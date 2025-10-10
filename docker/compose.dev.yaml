@@ -2,14 +2,14 @@ services:
 
   web:
     image: nginx
-    container_name: nginx-proxy
+    container_name: blog-proxy
     
     ports:
       - "80:80"
       - "443:443"
 
     volumes:
-      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
 
     depends_on:
       - post-service
@@ -21,7 +21,7 @@ services:
 
   user-client:
     build:
-      context: ./user-client
+      context: ../user-client
       dockerfile: Dockerfile
     container_name: user-client
     
@@ -29,7 +29,7 @@ services:
       - "3000:3000"
     
     env_file:
-      - ./user-client/env/.env.dev
+      - ../user-client/env/.env.dev
 
     depends_on:
       - post-service
@@ -39,7 +39,7 @@ services:
 
   post-service:
     build: 
-      context: ./post-service
+      context: ../post-service
       dockerfile: Dockerfile
     container_name: post-service
 
@@ -47,7 +47,7 @@ services:
       - "8080:8080"
 
     env_file:
-      - ./post-service/env/.env.dev
+      - ../post-service/env/.env.dev
 
     depends_on:
       post-db:
@@ -62,10 +62,10 @@ services:
     container_name: post-db
 
     ports:
-      - "5432:5432"
+      - "8090:5432"
 
     env_file:
-      - ./post-service/env/.env.dev
+      - ../post-service/env/.env.dev
 
     volumes:
       - post-data:/var/lib/postgresql/data:rw
