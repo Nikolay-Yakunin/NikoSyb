@@ -133,3 +133,6 @@ docker-compose -f docker/compose.prod.yaml up
   - Код идеоматичен и использованы паттерны
 
 ![stage 3 arch](images/stage3.png)
+
+©Якунин Николай Владимирович
+[MIT](https://opensource.org/licenses/MIT)
