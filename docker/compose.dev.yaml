@@ -1,0 +1,88 @@
+services:
+
+  web:
+    image: nginx
+    container_name: nginx-proxy
+    
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/conf.d/default.conf:ro
+
+    depends_on:
+      - post-service
+      - user-client
+    
+    networks:
+      - blog-net
+
+
+  user-client:
+    build:
+      context: ./user-client
+      dockerfile: Dockerfile
+    container_name: user-client
+    
+    ports:
+      - "3000:3000"
+    
+    env_file:
+      - ./user-client/env/.env.dev
+
+    depends_on:
+      - post-service
+
+    networks:
+      - blog-net
+
+  post-service:
+    build: 
+      context: ./post-service
+      dockerfile: Dockerfile
+    container_name: post-service
+
+    ports:
+      - "8080:8080"
+
+    env_file:
+      - ./post-service/env/.env.dev
+
+    depends_on:
+      post-db:
+        condition: service_healthy
+
+    networks:
+      - blog-net
+
+
+  post-db:
+    image: postgres:18
+    container_name: post-db
+
+    ports:
+      - "5432:5432"
+
+    env_file:
+      - ./post-service/env/.env.dev
+
+    volumes:
+      - post-data:/var/lib/postgresql/data:rw
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postuser -d postdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - blog-net
+
+
+networks:
+  blog-net:
+    driver: bridge
+
+volumes:
+  post-data:

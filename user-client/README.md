@@ -1,6 +1,6 @@
-## blog-client
+## user-client
 
-blog-client - клиент для блога.
+user-client - клиент для блога.
 
 ### Структура
 ```

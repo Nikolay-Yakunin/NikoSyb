@@ -1,10 +1,10 @@
-## blog-service
+## post-service
 
-blog-service - микросервис для постов.
+post-service - микросервис для постов.
 
 ### Структура
 ```
-blog-service/
+post-service/
 ├── cmd
 │   └── main.go           -- Entry point
 ├── internal
