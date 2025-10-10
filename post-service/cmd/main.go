@@ -21,6 +21,13 @@ func main() {
 	r := gin.Default()
 	log.Println("Gin router initialized.")
 
+	gin.SetMode(conf.GinMode)
+	log.Printf("Gin mode set to %s.\n", conf.GinMode)
+
+	if gin.Mode() != conf.GinMode {
+		log.Fatalf("Failed to set Gin mode actual=%s != expected=%s", gin.Mode(), conf.GinMode)
+	}
+
 	// DB
 	log.Println("Connecting to database...")
 	db, err := gorm.Open(postgres.Open(conf.Dns), &gorm.Config{})

@@ -5,14 +5,16 @@ import (
 )
 
 type Config struct {
-	Dns  string
-	Port string
+	GinMode string
+	Dns     string
+	Port    string
 }
 
 func NewConfig() *Config {
 	return &Config{
-		Port: getEnv("PORT", ":8080"),
-		Dns:  getEnv("DNS", "postgres user=postuser password=postpass dbname=postdb port=5432 sslmode=disable"),
+		GinMode: getEnv("GIN_MODE", "test"),
+		Port:    getEnv("PORT", ":8080"),
+		Dns:     getEnv("DNS", "postgres user=postuser password=postpass dbname=postdb port=5432 sslmode=disable"),
 	}
 }
 
