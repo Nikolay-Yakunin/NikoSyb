@@ -14,7 +14,12 @@ export function PostList({ posts, prefix }: PostListProps) {
       ) : (
         <div className="space-y-12">
           {posts.map((post) => (
-            <PostItem key={post.ID} post={post} showTitleLink href={prefix + String(post.ID)} />
+            <PostItem
+              key={post.ID}
+              post={post}
+              showTitleLink
+              href={prefix + String(post.ID)}
+            />
           ))}
         </div>
       )}

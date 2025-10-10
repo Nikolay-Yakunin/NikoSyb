@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Roboto_Mono } from "next/font/google";
 import "./globals.css";
+import { METADATA_URL } from "@/shared/model";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,6 +14,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(METADATA_URL),
   title: "NIKOSYB",
   description:
     "Личный блог full-stack разрабочика Nikolay-Yakunin. Здесь вы найдете новости о моей жизни, мои достижения и открытия. Приятного чтения!",

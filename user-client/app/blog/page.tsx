@@ -55,7 +55,7 @@ export default async function Blog({
         <div className="container mx-auto max-w-2xl">
           <h1 className="text-3xl mb-8">Blog</h1>
 
-          <PostList posts={postsWithHtml} prefix="blog/"/>
+          <PostList posts={postsWithHtml} prefix="blog/" />
 
           {/* Пагинация */}
           <div className="flex justify-between mt-12 pt-8 border-t border-gray-800">
