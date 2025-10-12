@@ -1,4 +1,4 @@
-FROM node:lts-alpine3.22 AS builder
+FROM node:22.20.0-bookworm AS builder
 
 WORKDIR /app
 
