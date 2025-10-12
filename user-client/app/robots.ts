@@ -49,8 +49,7 @@ export default function robots(): MetadataRoute.Robots {
       // Others
       {
         userAgent: "*",
-        disallow: '/api/',
-
+        disallow: "/api/",
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
