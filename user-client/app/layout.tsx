@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(METADATA_URL),
   title: "NIKOSYB",
   description:
-    "Личный блог full-stack разрабочика Nikolay-Yakunin. Здесь вы найдете новости о моей жизни, мои достижения и открытия. Приятного чтения!",
+    "Личный блог full-stack разрабочика Nikolay-Yakunin (Николай Якунин). Здесь вы найдете новости о моей жизни, мои достижения и открытия. Приятного чтения!",
 };
 
 export default function RootLayout({
