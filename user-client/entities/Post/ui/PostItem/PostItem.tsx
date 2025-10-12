@@ -24,7 +24,7 @@ export function PostItem({ post, showTitleLink = false, href }: PostItemProps) {
     <div className="space-y-4">
       <TitleElement />
       <article
-        className="prose prose-invert prose-lg max-w-none"
+        className="prose prose-invert prose-lg max-w-none text-wrap"
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
     </div>
