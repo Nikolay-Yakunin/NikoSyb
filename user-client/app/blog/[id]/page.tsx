@@ -1,13 +1,9 @@
 import { Header, Footer } from "@/shared/ui";
 import { PostItem, getPost } from "@/entities/Post";
-import { remark } from "remark";
-import html from "remark-html";
-import gfm from "remark-gfm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { markdownToHtml } from "@/shared/lib";
 export const dynamic = "force-dynamic";
-
-const markdownProcessor = remark().use(gfm).use(html);
 
 export default async function BlogPostPage({
   params,
@@ -28,10 +24,10 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  const processed = await markdownProcessor.process(post.body);
+  const processed = await markdownToHtml(post.body);
   const postWithHtml = {
     ...post,
-    html: String(processed.value),
+    html: processed,
   };
 
   return (

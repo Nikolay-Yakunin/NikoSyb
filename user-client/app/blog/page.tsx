@@ -1,14 +1,11 @@
 import { Header, Footer } from "@/shared/ui";
 import { getPosts, PostList, PostsResponse } from "@/entities/Post";
-import { remark } from "remark";
-import html from "remark-html";
-import gfm from "remark-gfm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { markdownToHtml } from "@/shared/lib";
 
 export const dynamic = "force-dynamic";
 
-const markdownProcessor = remark().use(gfm).use(html);
 const POSTS_PER_PAGE = 10;
 
 export default async function Blog({
@@ -36,10 +33,10 @@ export default async function Blog({
 
   const postsWithHtml = await Promise.all(
     posts.map(async (post) => {
-      const processed = await markdownProcessor.process(post.body);
+      const processed = await markdownToHtml(post.body);
       return {
         ...post,
-        html: String(processed.value),
+        html: processed,
       };
     }),
   );
