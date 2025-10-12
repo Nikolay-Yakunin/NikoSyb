@@ -33,7 +33,7 @@ export default async function Blog({
 
   const postsWithHtml = await Promise.all(
     posts.map(async (post) => {
-      const processed = await markdownToHtml(post.body)
+      const processed = await markdownToHtml(post.body);
       return {
         ...post,
         html: processed,
