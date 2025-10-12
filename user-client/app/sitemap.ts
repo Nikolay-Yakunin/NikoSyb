@@ -1,18 +1,20 @@
-import type { MetadataRoute } from 'next'
- 
+import { METADATA_URL } from "@/shared/model";
+import type { MetadataRoute } from "next";
+
 export default function sitemap(): MetadataRoute.Sitemap {
+  const siteUrl = METADATA_URL;
   return [
     {
-      url: 'https://nikolay-yakunin.ru/',
+      url: siteUrl,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: 'https://acme.com/blog',
+      url: siteUrl,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: "weekly",
       priority: 0.5,
     },
-  ]
+  ];
 }
