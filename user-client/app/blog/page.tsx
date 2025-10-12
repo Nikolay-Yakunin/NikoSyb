@@ -1,8 +1,7 @@
 import { Header, Footer } from "@/shared/ui";
-import { getPosts, PostList, PostsResponse } from "@/entities/Post";
+import { getPostsWithHtml, PostList } from "@/entities/Post";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { markdownToHtml } from "@/shared/lib";
 
 export const dynamic = "force-dynamic";
 
@@ -21,25 +20,14 @@ export default async function Blog({
     notFound();
   }
 
-  let data: PostsResponse;
-  try {
-    data = await getPosts(currentPage, POSTS_PER_PAGE);
-  } catch (error) {
+  const data = await getPostsWithHtml(currentPage, POSTS_PER_PAGE);
+  if (!data) {
     notFound();
   }
 
-  const posts = data.posts;
+  // TODO: Mov pag
+  const { posts } = data;
   const hasMore = posts.length === POSTS_PER_PAGE;
-
-  const postsWithHtml = await Promise.all(
-    posts.map(async (post) => {
-      const processed = await markdownToHtml(post.body);
-      return {
-        ...post,
-        html: processed,
-      };
-    }),
-  );
 
   const prevPage = currentPage > 0 ? currentPage - 1 : null;
   const nextPage = hasMore ? currentPage + 1 : null;
@@ -52,7 +40,7 @@ export default async function Blog({
         <div className="container mx-auto max-w-2xl">
           <h1 className="text-3xl mb-8">Blog</h1>
 
-          <PostList posts={postsWithHtml} prefix="blog/" />
+          <PostList posts={posts} prefix="blog/" />
 
           {/* Пагинация */}
           <div className="flex justify-between mt-12 pt-8 border-t border-gray-800">

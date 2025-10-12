@@ -22,11 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body
-        className={`${robotoMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${robotoMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

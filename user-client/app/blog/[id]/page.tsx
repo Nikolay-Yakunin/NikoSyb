@@ -1,8 +1,8 @@
 import { Header, Footer } from "@/shared/ui";
-import { PostItem, getPost } from "@/entities/Post";
+import { PostItem, getPostWithHtml } from "@/entities/Post";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { markdownToHtml } from "@/shared/lib";
+
 export const dynamic = "force-dynamic";
 
 export default async function BlogPostPage({
@@ -17,18 +17,11 @@ export default async function BlogPostPage({
     notFound();
   }
 
-  let post;
-  try {
-    post = await getPost(idNum);
-  } catch (error) {
+  // data
+  const postWithHtml = await getPostWithHtml(idNum);
+  if (!postWithHtml) {
     notFound();
   }
-
-  const processed = await markdownToHtml(post.body);
-  const postWithHtml = {
-    ...post,
-    html: processed,
-  };
 
   return (
     <div className="flex flex-col min-h-screen p-0 m-0 font-mono bg-black text-white">
