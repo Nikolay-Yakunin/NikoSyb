@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-    style-src 'self';
+    style-src 'self' 'nonce-${nonce}';
     img-src 'self' data: https:;
     font-src 'self';
     connect-src 'self';
