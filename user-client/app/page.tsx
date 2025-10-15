@@ -1,6 +1,9 @@
 import { Header, Footer } from "@/shared/ui";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen p-0 m-0 font-mono bg-black text-white">
