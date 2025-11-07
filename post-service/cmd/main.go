@@ -15,7 +15,7 @@ import (
 
 func main() {
 	log.Println("Starting application...")
-	conf := config.NewConfig()
+	conf := config.New()
 	log.Printf("Configuration loaded. DNS: %s\n", conf.Dns)
 
 	r := gin.Default()

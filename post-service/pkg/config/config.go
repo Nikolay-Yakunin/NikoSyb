@@ -10,7 +10,7 @@ type Config struct {
 	Port    string
 }
 
-func NewConfig() *Config {
+func New() *Config {
 	return &Config{
 		GinMode: getEnv("GIN_MODE", "test"),
 		Port:    getEnv("PORT", ":8080"),
