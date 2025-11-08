@@ -1,5 +1,5 @@
 import { Header, Footer } from "@/shared/ui";
-import { PostItem, getPostWithHtml } from "@/entities/Post";
+import { getPost, PostItem, PostToHtml } from "@/entities/Post";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
@@ -18,7 +18,7 @@ export default async function BlogPostPage({
   }
 
   // data
-  const postWithHtml = await getPostWithHtml(idNum);
+  const postWithHtml = await PostToHtml(await getPost(idNum));
   if (!postWithHtml) {
     notFound();
   }

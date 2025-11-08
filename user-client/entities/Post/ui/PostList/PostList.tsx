@@ -9,7 +9,7 @@ export type PostListProps = {
 export function PostList({ posts, prefix }: PostListProps) {
   return (
     <>
-      {posts.length === 0 ? (
+      {posts?.length === 0 || !posts ? (
         <p className="text-gray-400">No posts yet.</p>
       ) : (
         <div className="space-y-12">

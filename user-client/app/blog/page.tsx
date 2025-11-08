@@ -1,7 +1,6 @@
 import { Header, Footer } from "@/shared/ui";
-import { getPostsWithHtml, PostList } from "@/entities/Post";
-import Link from "next/link";
 import { notFound } from "next/navigation";
+import PostsWidget from "@/entities/Post/widget/PostsWidget/PostsWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -14,63 +13,19 @@ export default async function Blog({
 }) {
   const pageParam = searchParams?.page;
   const currentPage =
-    typeof pageParam === "string" ? parseInt(pageParam, 10) : 0;
+    typeof pageParam === "string" ? parseInt(pageParam, 10) : 1;
 
-  if (isNaN(currentPage) || currentPage < 0) {
+  if (isNaN(currentPage) || currentPage < 1) {
     notFound();
   }
 
-  const data = await getPostsWithHtml(currentPage, POSTS_PER_PAGE);
-  if (!data) {
-    notFound();
-  }
-
-  // TODO: Mov pag
-  const { posts } = data;
-  const hasMore = posts.length === POSTS_PER_PAGE;
-
-  const prevPage = currentPage > 0 ? currentPage - 1 : null;
-  const nextPage = hasMore ? currentPage + 1 : null;
 
   return (
     <div className="flex flex-col min-h-screen p-0 m-0 font-mono bg-black text-white">
       <Header />
 
       <main className="flex-grow px-4 py-12">
-        <div className="container mx-auto max-w-2xl">
-          <h1 className="text-3xl mb-8">Blog</h1>
-
-          <PostList posts={posts} prefix="blog/" />
-
-          {/* Пагинация */}
-          <div className="flex justify-between mt-12 pt-8 border-t border-gray-800">
-            {prevPage !== null ? (
-              <Link
-                href={{ pathname: "/blog", query: { page: prevPage } }}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-              >
-                ← Previous
-              </Link>
-            ) : (
-              <span />
-            )}
-
-            <span className="self-center text-gray-400">
-              Page {currentPage + 1}
-            </span>
-
-            {nextPage !== null ? (
-              <Link
-                href={{ pathname: "/blog", query: { page: nextPage } }}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-              >
-                Next →
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
-        </div>
+        <PostsWidget page={currentPage} limit={POSTS_PER_PAGE} />
       </main>
 
       <Footer />

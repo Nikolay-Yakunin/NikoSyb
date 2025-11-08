@@ -7,7 +7,13 @@ WORKDIR /app
 
 COPY package*.json ./
 
+RUN mkdir -p /root/.cache/next-swc
+
 RUN npm install
+
+#  => => # > next build --turbopack                                                                                                                                       
+#  => => #    Downloading swc package @next/swc-linux-x64-gnu... to /root/.cache/next-swc                                                                                 
+#  => => #    Downloading swc package @next/swc-linux-x64-musl... to /root/.cache/next-swc  
 
 COPY . .
 

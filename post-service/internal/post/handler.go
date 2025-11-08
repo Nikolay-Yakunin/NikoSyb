@@ -44,12 +44,13 @@ func (h *PostHandler) PostPost(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, createdPost)
 }
 
+// GetPosts - пагинация
 func (h *PostHandler) GetPosts(ctx *gin.Context) {
-	pageStr := ctx.DefaultQuery("page", "0")
+	pageStr := ctx.DefaultQuery("page", "1")
 	limitStr := ctx.DefaultQuery("limit", "10")
 
 	page, err := strconv.Atoi(pageStr)
-	if err != nil || page < 0 {
+	if err != nil || page < 1 {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "page must be a positive integer"})
 		return
 	}
@@ -66,21 +67,62 @@ func (h *PostHandler) GetPosts(ctx *gin.Context) {
 		return
 	}
 
+	// количество страниц = количество постов 
 	totalPages := int((total + int64(limit) - 1) / int64(limit))
 
-	var res struct {
-		Page       int     `json:"page"`
-		Limit      int     `json:"limit"`
-		Total      int64   `json:"total"`
-		TotalPages int     `json:"total_pages"`
-		Posts      []*Post `json:"posts"`
+	baseURL := ctx.Request.URL.Path
+	buildURL := func(p, l int) string {
+		return fmt.Sprintf("%s?page=%d&limit=%d", baseURL, p, l)
 	}
 
-	res.Page = page
-	res.Limit = limit
-	res.Total = total
-	res.TotalPages = totalPages
-	res.Posts = posts
+	meta := struct {
+		Page       int   `json:"page"`
+		Limit      int   `json:"limit"`
+		TotalPages int   `json:"total_pages"`
+		Total      int64 `json:"total"`
+	}{
+		Page:       page,
+		Limit:      limit,
+		TotalPages: totalPages,
+		Total:      total,
+	}
+
+	links := struct {
+		Self  string `json:"self"`
+		Next  string `json:"next,omitempty"`
+		Prev  string `json:"prev,omitempty"`
+		First string `json:"first"`
+		Last  string `json:"last,omitempty"`
+	}{
+		Self:  buildURL(page, limit),
+		First: buildURL(0, limit),
+	}
+
+	if page > 1 {
+		links.Prev = buildURL(page-1, limit)
+	}
+	if page < totalPages {
+		links.Next = buildURL(page+1, limit)
+	}
+	if totalPages > 0 {
+		links.Last = buildURL(totalPages-1, limit)
+	}
+
+	res := struct {
+		Meta  interface{} `json:"meta"`
+		Links interface{} `json:"links"`
+		Data  []*Post     `json:"data"`
+	}{
+		Meta:  meta,
+		Links: links,
+		Data:  posts,
+	}
+
+	// Дублирую мету в заголовке.
+	if page < totalPages-1 {
+		nextURL := fmt.Sprintf("/posts?page=%d&limit=%d", page+1, limit)
+		ctx.Header("Link", fmt.Sprintf(`<%s>; rel="next"`, nextURL))
+	}
 
 	ctx.JSON(http.StatusOK, res)
 }

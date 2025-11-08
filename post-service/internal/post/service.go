@@ -12,7 +12,7 @@ func NewPostService(repo *PostRepository) PostService {
 
 type PostServiceInterface interface {
 	CreatePost(post Post) (*Post, error)
-	GetAllPosts(offset int, limit int) ([]*Post, int64, error)
+	GetAllPosts(page int, limit int) ([]*Post, int64, error)
 	GetPostById(id int) (*Post, error)
 }
 
@@ -25,8 +25,11 @@ func (srv *PostService) CreatePost(post Post) (*Post, error) {
 	return res, nil
 }
 
-func (srv *PostService) GetAllPosts(offset int, limit int) ([]*Post, int64, error) {
-	posts, total, err := srv.repo.GetAll(offset*limit, limit)
+func (srv *PostService) GetAllPosts(page int, limit int) ([]*Post, int64, error) {
+	// 0 = (1-1)*10
+	// 10 = (2-1)*10
+	offset := (page-1)*limit
+	posts, total, err := srv.repo.GetAll(offset, limit)
 	if err != nil {
 		return nil, total, fmt.Errorf("SRV: failed to get all posts: %w", err)
 	}

@@ -1,2 +1,1 @@
-export * from "./getPostWithHtml";
-export * from "./getPostsWithHtml";
+export * from "./PostToHtml";
