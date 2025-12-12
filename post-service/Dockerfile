@@ -1,19 +1,31 @@
 FROM golang:1.24-alpine3.22 AS builder
 
+# Install timezone data (latest version)
 RUN apk add --no-cache tzdata
 
+# Set working directory
+WORKDIR /build
+
+# Copy go modules files
 COPY go.* ./
 
+# Download dependencies
 RUN go mod download
 
+# Copy source code
 COPY . .
 
+# Build binary
 RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/main.go
 
+# Final stage
 FROM scratch
 
-COPY --from=builder /server /server
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /server /app/server
 
 EXPOSE 8080
 
-CMD [ "/server" ]
+CMD ["/app/server"]

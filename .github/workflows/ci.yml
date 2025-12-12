@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'post-service/**'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'post-service/**'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  lint-and-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: post-service
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'post-service/go.mod'
+          cache-dependency-path: 'post-service/go.sum'
+      
+      - name: Check Go version
+        run: go version
+      
+      - name: Download dependencies
+        run: go mod download
+      
+      - name: Verify dependencies
+        run: go mod verify
+      
+      - name: Check code formatting
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "❌ Code is not formatted. Please run: go fmt ./..."
+            echo "Files that need formatting:"
+            gofmt -l .
+            exit 1
+          fi
+          echo "✅ Code is properly formatted"
+      
+      - name: Run go vet
+        run: go vet ./...
+      
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v4
+        with:
+          version: latest
+          working-directory: post-service
+          args: --timeout=5m
+      
+      - name: Build
+        run: go build -v ./...
+      
+      - name: Run tests
+        run: |
+          go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./post-service/coverage.out
+          flags: unittests
+          name: codecov-post-service
+          fail_ci_if_error: false
