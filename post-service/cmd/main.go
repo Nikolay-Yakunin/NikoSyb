@@ -16,7 +16,7 @@ import (
 func main() {
 	log.Println("Starting application...")
 	conf := config.NewConfig()
-	log.Printf("Configuration loaded. DNS: %s\n", conf.Dns)
+	log.Println("Configuration loaded successfully")
 
 	r := gin.Default()
 	log.Println("Gin router initialized.")
