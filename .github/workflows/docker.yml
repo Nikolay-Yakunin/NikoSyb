@@ -33,15 +33,16 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=sha,prefix={{branch}}-
+      - name: Generate Docker tags
+        id: tags
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            TAG="pr-${{ github.event.pull_request.number }}"
+          else
+            TAG="${{ github.ref_name }}"
+          fi
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "image_ref=${{ env.IMAGE_NAME }}:${TAG}" >> $GITHUB_OUTPUT
       
       - name: Build Docker image
         uses: docker/build-push-action@v5
@@ -49,15 +50,14 @@ jobs:
           context: ./post-service
           push: false
           load: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.tags.outputs.image_ref }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
       - name: Run Trivy vulnerability scanner (SARIF)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}
+          image-ref: ${{ steps.tags.outputs.image_ref }}
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -72,7 +72,7 @@ jobs:
       - name: Run Trivy vulnerability scanner (Table)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}
+          image-ref: ${{ steps.tags.outputs.image_ref }}
           format: 'table'
           severity: 'CRITICAL,HIGH'
           exit-code: 1
@@ -93,7 +93,6 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_NAME }}:latest
-            ${{ env.IMAGE_NAME }}:main-${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
