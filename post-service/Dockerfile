@@ -1,7 +1,7 @@
 FROM golang:1.24-alpine3.22 AS builder
 
-# Pin package versions for reproducibility
-RUN apk add --no-cache tzdata=2024b-r1
+# Install timezone data (latest version)
+RUN apk add --no-cache tzdata
 
 # Set working directory
 WORKDIR /build
