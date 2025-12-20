@@ -1,24 +1,21 @@
 import { Header, Footer } from "@/shared/ui";
-import { PostItem, getPostWithHtml } from "@/entities/Post";
+import { PostItem, getPostV1 } from "@/entities/Post";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+type PostParams = {
+  id: number
+}
 
 export default async function BlogPostPage({
   params,
 }: {
-  params: { id: string };
+  params: PostParams
 }) {
   const { id } = params;
 
-  const idNum = Number(id);
-  if (isNaN(idNum) || !Number.isInteger(idNum) || idNum <= 0) {
-    notFound();
-  }
-
   // data
-  const postWithHtml = await getPostWithHtml(idNum);
+  const postWithHtml = await getPostV1(id);
   if (!postWithHtml) {
     notFound();
   }

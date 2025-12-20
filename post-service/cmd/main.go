@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"html"
 	"log"
+	"time"
 
 	"github.com/Nikolay-Yakunin/NikoSyb/internal/post"
 	"github.com/Nikolay-Yakunin/NikoSyb/pkg/config"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -15,18 +17,33 @@ import (
 
 func main() {
 	log.Println("Starting application...")
+
+	// Load config
 	conf := config.NewConfig()
 	log.Println("Configuration loaded successfully")
 
+	// Gin init
 	r := gin.Default()
 	log.Println("Gin router initialized.")
 
+	// Gin mode
 	gin.SetMode(conf.GinMode)
 	log.Printf("Gin mode set to %s.\n", conf.GinMode)
-
 	if gin.Mode() != conf.GinMode {
 		log.Fatalf("Failed to set Gin mode actual=%s != expected=%s", gin.Mode(), conf.GinMode)
 	}
+
+	// TODO: Move Cors conf to config
+	// Cors
+	corsConf := cors.Config{
+		AllowOrigins:     []string{"https://nikolay-yakunin.ru"},
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
+	r.Use(cors.New(corsConf))
 
 	// DB
 	log.Println("Connecting to database...")
@@ -36,6 +53,7 @@ func main() {
 	}
 	log.Println("Database connection established.")
 
+	// DB Migration
 	log.Println("Running auto-migration...")
 	err = db.AutoMigrate(&post.Post{})
 	if err != nil {
@@ -44,15 +62,12 @@ func main() {
 	log.Println("Auto-migration completed.")
 
 	// Repos
-
 	postRepo := post.NewPostRepository(db)
 
 	// Srv
-
 	postSrv := post.NewPostService(&postRepo)
 
 	// Handlers
-
 	postHandler := post.NewPostHandler(&postSrv)
 
 	r.GET("/", func(ctx *gin.Context) {

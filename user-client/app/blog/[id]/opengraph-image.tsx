@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { getPost } from "@/entities/Post";
+import { getPostV1 } from "@/entities/Post";
 // import { readFile } from 'node:fs/promises';
 // import { join } from 'node:path'
 
@@ -13,7 +13,7 @@ export const contentType = "image/png";
 
 // Image generation
 export default async function Image({ params }: { params: { id: string } }) {
-  const post = await getPost(Number(params.id));
+  const post = await getPostV1(Number(params.id));
   //   const fontData = await readFile(
   //     join(process.cwd(), 'assets/fonts/RobotoMono.ttf')
   //   )

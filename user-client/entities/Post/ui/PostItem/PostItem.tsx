@@ -1,16 +1,20 @@
 import { Post } from "@/entities/Post";
+import { markdownToHtml } from "@/shared/lib";
 import Link from "next/link";
 
-export type PostItemProps = {
-  post: Post & { html: string };
-  showTitleLink?: boolean;
+interface PostItemProps {
+  post: Post;
   href?: string;
-};
+}
 
-export function PostItem({ post, showTitleLink = false, href }: PostItemProps) {
-  const TitleElement = () => (
-    <h1 className="text-4xl">
-      {showTitleLink && href ? (
+export async function PostItem({post, href}: PostItemProps) {
+
+  let html = await markdownToHtml(post.body);
+
+  return (
+    <div className="space-y-4">
+      <h1 className="text-4xl">
+      {href ? (
         <Link href={href} className="hover:underline">
           {post.title}
         </Link>
@@ -18,15 +22,11 @@ export function PostItem({ post, showTitleLink = false, href }: PostItemProps) {
         post.title
       )}
     </h1>
-  );
-
-  return (
-    <div className="space-y-4">
-      <TitleElement />
       <article
         className="prose prose-invert prose-lg max-w-none text-wrap"
-        dangerouslySetInnerHTML={{ __html: post.html }}
+        dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>
   );
 }
+

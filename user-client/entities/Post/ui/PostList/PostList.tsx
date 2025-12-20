@@ -1,12 +1,12 @@
-import { Post } from "../../model";
-import { PostItem } from "../PostItem";
+import { Post, PostItem } from "@/entities/Post";
 
-export type PostListProps = {
-  posts: (Post & { html: string })[];
-  prefix: string;
-};
+interface PostListProps {
+  posts: Post[];
+  prefix:  string;
+}
 
-export function PostList({ posts, prefix }: PostListProps) {
+export function PostList({posts, prefix}: PostListProps) {
+  
   return (
     <>
       {posts.length === 0 ? (
@@ -17,8 +17,7 @@ export function PostList({ posts, prefix }: PostListProps) {
             <PostItem
               key={post.ID}
               post={post}
-              showTitleLink
-              href={prefix + String(post.ID)}
+              href={`${prefix}/${post.ID}`}
             />
           ))}
         </div>

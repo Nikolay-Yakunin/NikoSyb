@@ -1,78 +1,52 @@
+import { getPostsV1, PostList } from "@/entities/Post";
 import { Header, Footer } from "@/shared/ui";
-import { getPostsWithHtml, PostList } from "@/entities/Post";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+import { NEXT_PUBLIC_SITE_URL} from "@/shared/model"
 
-export const dynamic = "force-dynamic";
+interface ParsedParams {
+  range: [number, number];
+  filter: Record<string, any>;
+  sort: [string, "ASC" | "DESC"];
+}
 
-const POSTS_PER_PAGE = 10;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-export default async function Blog({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  const pageParam = searchParams?.page;
-  const currentPage =
-    typeof pageParam === "string" ? parseInt(pageParam, 10) : 0;
+export default async function BlogPage(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
 
-  if (isNaN(currentPage) || currentPage < 0) {
-    notFound();
-  }
+  // parse
+  // TODO: Improve this
+  const parse = <T,>(param: any, fallback: T): T => {
+    if (typeof param !== "string") return fallback;
+    try {
+      return JSON.parse(param);
+    } catch {
+      return fallback;
+    }
+  };
 
-  const data = await getPostsWithHtml(currentPage, POSTS_PER_PAGE);
-  if (!data) {
-    notFound();
-  }
+  const params: ParsedParams = {
+    range: parse(searchParams.range, [0, 9]),
+    filter: parse(searchParams.filter, {}),
+    sort: parse(searchParams.sort, ["id", "DESC"]),
+  };
 
-  // TODO: Mov pag
-  const { posts } = data;
-  const hasMore = posts.length === POSTS_PER_PAGE;
-
-  const prevPage = currentPage > 0 ? currentPage - 1 : null;
-  const nextPage = hasMore ? currentPage + 1 : null;
+  const posts = await getPostsV1(params);
+  const prefix = NEXT_PUBLIC_SITE_URL;
 
   return (
-    <div className="flex flex-col min-h-screen p-0 m-0 font-mono bg-black text-white">
+    <div className="flex flex-col min-h-screen font-mono bg-black text-white">
       <Header />
-
       <main className="flex-grow px-4 py-12">
         <div className="container mx-auto max-w-2xl">
           <h1 className="text-3xl mb-8">Blog</h1>
-
-          <PostList posts={posts} prefix="blog/" />
-
-          {/* Пагинация */}
-          <div className="flex justify-between mt-12 pt-8 border-t border-gray-800">
-            {prevPage !== null ? (
-              <Link
-                href={{ pathname: "/blog", query: { page: prevPage } }}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-              >
-                ← Previous
-              </Link>
-            ) : (
-              <span />
-            )}
-
-            <span className="self-center text-gray-400">
-              Page {currentPage + 1}
-            </span>
-
-            {nextPage !== null ? (
-              <Link
-                href={{ pathname: "/blog", query: { page: nextPage } }}
-                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded"
-              >
-                Next →
-              </Link>
-            ) : (
-              <span />
-            )}
-          </div>
+          
+          {posts ? (
+            <PostList posts={posts} prefix={`${prefix}/blog`} />
+          ) : (
+            <p className="text-gray-500">Error loading posts.</p>
+          )}
         </div>
       </main>
-
       <Footer />
     </div>
   );

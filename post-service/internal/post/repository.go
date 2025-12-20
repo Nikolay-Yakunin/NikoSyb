@@ -1,6 +1,7 @@
 package post
 
 import (
+	"context"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -15,36 +16,68 @@ func NewPostRepository(db *gorm.DB) PostRepository {
 }
 
 type PostRepositoryInterface interface {
-	Create(post Post) (*Post, error)
-	GetAll(offset, limit int) ([]*Post, int64, error)
-	GetById(id int) (*Post, error)
+	Create(ctx context.Context, post Post) (*Post, error)
+	// LIMIT, OFFSET, ORDER BY
+	GetAll(ctx context.Context, offset, limit int, sort string) ([]*Post, int64, error)
+	GetById(ctx context.Context, id int) (*Post, error)
 }
 
-func (r *PostRepository) Create(post Post) (*Post, error) {
-	res := r.db.Create(&post)
+func (r *PostRepository) Create(ctx context.Context, post Post) (*Post, error) {
+	res := r.db.WithContext(ctx).Create(&post)
 	if res.Error != nil {
-		return nil, fmt.Errorf("REPO: failed to create post: %w", res.Error)
+		return nil, fmt.Errorf("repo: failed to create post: %w", res.Error)
 	}
 	return &post, nil
 }
 
-func (r *PostRepository) GetAll(offset int, limit int) ([]*Post, int64, error) {
-	posts := make([]*Post, limit)
-	res := r.db.Limit(limit).Offset(offset).Find(&posts)
-
+// sortOrder - ASC | DESC
+func (r *PostRepository) GetAll(ctx context.Context, filters PostFilters, offset, limit int, sort string) ([]*Post, int64, error) {
+	var posts []*Post
 	var total int64
-	r.db.Count(&total)
-	if res.Error != nil {
-		return nil, 0, fmt.Errorf("REPO: failed to find posts on offset %d: %w", offset, res.Error)
+
+	// SQL query
+	query := r.db.WithContext(ctx).Model(&Post{})
+
+	// Filters
+	query = applyFilters(query, filters)
+
+	// count before use offset and limit
+	if err := query.Count(&total).Error; err != nil {
+		return nil, 0, fmt.Errorf("repo: count posts: %w", err)
 	}
+
+	// Execute SQL
+	err := query.Order(sort).
+		Limit(limit).
+		Offset(offset).
+		Find(&posts).Error
+
+	if err != nil {
+		return nil, 0, fmt.Errorf("repo: list posts: %w", err)
+	}
+
 	return posts, total, nil
 }
 
-func (r *PostRepository) GetById(id int) (*Post, error) {
+func (r *PostRepository) GetById(ctx context.Context, id int) (*Post, error) {
 	var post Post
-	res := r.db.First(&post, "ID = ?", id)
+	res := r.db.WithContext(ctx).First(&post, "ID = ?", id)
 	if res.Error != nil {
-		return nil, fmt.Errorf("REPO: failed to find post where id %d: %w", id, res.Error)
+		return nil, fmt.Errorf("repo: failed to find post where id %d: %w", id, res.Error)
 	}
 	return &post, nil
+}
+
+// helpers
+
+func applyFilters(db *gorm.DB, filters PostFilters) *gorm.DB {
+	if filters.ID != nil {
+		db = db.Where("id = ?", filters.ID)
+	}
+
+	if filters.Title != nil {
+		db = db.Where("title LIKE ?", fmt.Sprintf("%%%s%%", *filters.Title))
+	}
+
+	return db
 }
