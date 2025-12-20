@@ -36,8 +36,8 @@ func main() {
 	// TODO: Move Cors conf to config
 	// Cors
 	corsConf := cors.Config{
-		AllowOrigins:     []string{"https://nikolay-yakunin.ru"},
-		AllowMethods:     []string{"GET", "POST"},
+		AllowOrigins:     []string{"https://nikolay-yakunin.ru", "http://localhost"},
+		AllowMethods:     []string{"GET", "POST", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,

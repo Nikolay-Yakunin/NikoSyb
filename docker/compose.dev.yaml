@@ -79,6 +79,16 @@ services:
     networks:
       - blog-net
 
+  admin-client:
+    build:
+      context: ../admin-client
+      dockerfile: Dockerfile
+    container_name: admin-client
+    depends_on:
+      - post-service
+    networks:
+      - blog-net
+
 
 networks:
   blog-net:
