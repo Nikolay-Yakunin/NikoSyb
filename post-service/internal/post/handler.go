@@ -126,9 +126,9 @@ func (h *PostHandler) GetPosts(ctx *gin.Context) {
 	}
 
 	// Headers
-    contentRange := fmt.Sprintf("posts %d-%d/%d", start, end, total)
+	contentRange := fmt.Sprintf("posts %d-%d/%d", start, end, total)
 	totalStr := strconv.Itoa(int(total))
-    ctx.Header("Content-Range", contentRange)
+	ctx.Header("Content-Range", contentRange)
 	ctx.Header("X-Total-Count", totalStr)
 	ctx.Header("Access-Control-Expose-Headers", "Content-Range, X-Total-Count")
 
